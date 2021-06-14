@@ -4,12 +4,11 @@ import array
 import serial
 
 
-
 REQUEST = '#'
 REPLY = '*'
 
-ACTION = 'A'
 QUERY = 'Q'
+ACTION = 'A'
 CONFIG = 'C'
 
 LssCommandDescription = {
