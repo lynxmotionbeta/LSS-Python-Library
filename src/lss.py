@@ -2,8 +2,8 @@ import re
 import unittest
 import array
 import serial
-import fcntl
 import termios
+
 
 
 REQUEST = '#'
@@ -151,6 +151,7 @@ class LssBus(object):
     def set_low_latency(self, enable_low_latency: bool, ignore_error=False):
         buf = array.array('i', [0] * 32)
         try:
+            import fcntl
             fcntl.ioctl(self.ser.fd, termios.TIOCGSERIAL, buf)
 
             # set or unset ASYNC_LOW_LATENCY flag
@@ -163,6 +164,8 @@ class LssBus(object):
             # set serial_struct
             fcntl.ioctl(self.ser.fd, termios.TIOCSSERIAL, buf)
 
+        except ModuleNotFoundError as e:
+            pass   # probably on windows
         except IOError as e:
             if ignore_error:
                 if enable_low_latency:
