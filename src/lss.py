@@ -2,7 +2,6 @@ import re
 import unittest
 import array
 import serial
-import termios
 
 
 
@@ -152,6 +151,7 @@ class LssBus(object):
         buf = array.array('i', [0] * 32)
         try:
             import fcntl
+            import termios
             fcntl.ioctl(self.ser.fd, termios.TIOCGSERIAL, buf)
 
             # set or unset ASYNC_LOW_LATENCY flag
