@@ -45,8 +45,13 @@ class LssTestCase(unittest.TestCase):
         self.assertIsNotNone(p)
         self.assertTrue(p.known)
         self.assertEqual(p.command, parameter)
-        self.assertGreaterEqual(p.value, value - precision)
-        self.assertLessEqual(p.value, value + precision)
+        self.assertBetween(p.value, value - precision, value + precision)
+
+
+    def assertBetween(self, v: int, min_value: int, max_value: int):
+        self.assertGreaterEqual(v, min_value)
+        self.assertLessEqual(v, max_value)
+
 
 # class LssSelfTests(LssTestCase):
 #
@@ -251,29 +256,17 @@ class LssQueryTests(LssTestCase):
             self.assertQuery(servo, 'Y')
 
 class LssActionTests(LssTestCase):
-    def assertBetween(self, v: int, min: int, max: int):
-        self.assertGreaterEqual(v, min)
-        self.assertLessEqual(v, max)
-
-    def assertServoQueryWithin(self, servo: int, parameter: str, value: int, precision: int = 5):
-        bus.write_command(servo, f'Q{parameter}')
-        p = bus.read()
-        self.assertIsNotNone(p)
-        self.assertTrue(p.known)
-        self.assertEqual(p.command, 'D')
-        self.assertBetween(p.value, value - precision, value + precision)
-
     def test_D(self):
         for servo in servos:
             bus.write_command(servo, 'D0')
             time.sleep(0.8)
-            self.assertServoQueryWithin(servo, 'D', 0, 10)
+            self.assertQueryWithin(servo, 'D', 0, 10)
             bus.write_command(servo, 'D900')
             time.sleep(0.8)
-            self.assertServoQueryWithin(servo, 'D', 900, 10)
+            self.assertQueryWithin(servo, 'D', 900, 10)
             bus.write_command(servo, 'D0')
             time.sleep(0.8)
-            self.assertServoQueryWithin(servo, 'D', 0, 10)
+            self.assertQueryWithin(servo, 'D', 0, 10)
 
 if __name__ == '__main__':
     unittest.main()
