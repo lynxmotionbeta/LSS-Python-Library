@@ -48,7 +48,21 @@ LssCommandDescription = {
     'LB': 'LED Blinking',
     'MS': 'Model String',
     'F': 'Firmware',
-    'N': 'Serial Number'
+    'N': 'Serial Number',
+    'HD': 'Holding Delta',
+    'LN': 'Negative Direction Limit',
+    'LP': 'Positive Direction Limit',
+    'LE': 'First Position Limits Enabled',
+    'CSL': 'Current Soft Limit Counter',
+    'IPE': 'IPMS Enabled',
+    'PO': 'Position Origin',
+    'IS': 'Initial Sequence',
+    'RIS': 'Initial Sequence RC',
+    'CR': 'Command Reply',
+    'TQ': 'Current Torque',
+    'TQT': 'Torque Target',
+    'TQM': 'Torque Maximum',
+    'Y': 'Control Mode'
 }
 
 LssCommandModifier = {
