@@ -48,67 +48,22 @@ class LssTestCase(unittest.TestCase):
         self.assertGreaterEqual(p.value, value - precision)
         self.assertLessEqual(p.value, value + precision)
 
-    def assertBetween(self, v: int, min: int, max: int):
-        self.assertGreaterEqual(v, min)
-        self.assertLessEqual(v, max)
-
-    def assertServoQueryWithin(self, servo: int, parameter: str, value: int, precision: int = 5):
-        bus.write_command(servo, f'Q{parameter}')
-        p = bus.read()
-        self.assertIsNotNone(p)
-        self.assertTrue(p.known)
-        self.assertEqual(p.command, 'D')
-        self.assertBetween(p.value, value - precision, value + precision)
-
-class LssSelfTests(LssTestCase):
-
-    # Configure & Verify LED
-    #def test_LED(self):
-        for servo in servos:
-            bus.write_command(servo, 'CLED2')
-            time.sleep(0.25)
-            self.assertQueryEqual(servo, 'LED', 2)
-            bus.write_command(servo, 'CLED0')
-
-    # Configure & Verify Stiffnesses
-        #def test_STIFF(self):
-            for servo in servos:
-                bus.write_command(servo, 'AH')
+# class LssSelfTests(LssTestCase):
+#
+#     # Configure & Verify LED
+#     def test_LED(self):
+#         for servo in servos:
+#             bus.write_command(servo, 'CLED2')
+#             time.sleep(0.25)
+#             self.assertQueryEqual(servo, 'LED', 2)
+#             bus.write_command(servo, 'CLED0')
+#
+#     # Configure & Verify Stiffnesses
+#     def test_STIFF(self):
+#         for servo in servos:
+#             bus.write_command(servo, 'AH')
 
 class LssQueryTests(LssTestCase):
-
-    def assertQuery(self, servo: int, parameter: str):
-        bus.write_command(servo, f'Q{parameter}')
-        p = bus.read()
-        self.assertIsNotNone(p)
-        self.assertTrue(p.known)
-        self.assertEqual(p.command, parameter)
-
-    def assertQueryEqual(self, servo: int, parameter: str, value: int):
-        bus.write_command(servo, f'Q{parameter}')
-        p = bus.read()
-        self.assertIsNotNone(p)
-        self.assertTrue(p.known)
-        self.assertEqual(p.value, value)
-        self.assertEqual(p.command, parameter)
-
-    def assertQueryBetween(self, servo: int, parameter: str, min: int, max: int):
-        bus.write_command(servo, f'Q{parameter}')
-        p = bus.read()
-        self.assertIsNotNone(p)
-        self.assertTrue(p.known)
-        self.assertEqual(p.command, parameter)
-        self.assertGreaterEqual(p.value, min)
-        self.assertLessEqual(p.value, max)
-
-    def assertQueryWithin(self, servo: int, parameter: str, value: int, precision: int = 5):
-        bus.write_command(servo, f'Q{parameter}')
-        p = bus.read()
-        self.assertIsNotNone(p)
-        self.assertTrue(p.known)
-        self.assertEqual(p.command, parameter)
-        self.assertGreaterEqual(p.value, value - precision)
-        self.assertLessEqual(p.value, value + precision)
 
     # Query Motor ID
     def test_QID(self):
@@ -296,8 +251,19 @@ class LssQueryTests(LssTestCase):
             self.assertQuery(servo, 'Y')
 
 class LssActionTests(LssTestCase):
+    def assertBetween(self, v: int, min: int, max: int):
+        self.assertGreaterEqual(v, min)
+        self.assertLessEqual(v, max)
 
-    #def test_D(self):
+    def assertServoQueryWithin(self, servo: int, parameter: str, value: int, precision: int = 5):
+        bus.write_command(servo, f'Q{parameter}')
+        p = bus.read()
+        self.assertIsNotNone(p)
+        self.assertTrue(p.known)
+        self.assertEqual(p.command, 'D')
+        self.assertBetween(p.value, value - precision, value + precision)
+
+    def test_D(self):
         for servo in servos:
             bus.write_command(servo, 'D0')
             time.sleep(0.8)
