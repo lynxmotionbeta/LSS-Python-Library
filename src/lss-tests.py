@@ -37,16 +37,16 @@ def find_config_file(config_basefile: str):
 #
 config = yaml.safe_load(
     open(find_config_file('lss-testing.yml')))
+if config:
+    # load port details
+    if 'port' in config:
+        port = config['port']
+        port_name = port['name'] if 'name' in port else '/dev/ttyUSB0'
+        baud = port['baud'] if 'baud' in port else 921600
+        low_latency = port['low_latency'] if 'low_latency' in port else False
 
-# load port details
-if 'port' in config:
-    port = config['port']
-    port_name = port['name'] if 'name' in port else '/dev/ttyUSB0'
-    baud = port['baud'] if 'baud' in port else 921600
-    low_latency = port['low_latency'] if 'low_latency' in port else False
-
-# load servo profiles
-servos = config['servos'] if 'servos' in config else [0]
+    # load servo profiles
+    servos = config['servos'] if 'servos' in config else [0]
 
 # now open the LSS bus
 bus = LssBus(
