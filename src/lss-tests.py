@@ -182,8 +182,9 @@ class LssProtocolTests(LssTestCase):
             self.assertQuery(servo, 'S')
 
     # Query Motion Control
-    def test_EM(self):
+    def test_MotionControl_EM(self):
         for servo in get_servos('query'):
+            self.assertQuery(servo, 'EM')
             bus.write_command(servo, 'EM0')
             self.assertQueryEqual(servo, 'EM', 0)
             bus.write_command(servo, 'CEM1')
@@ -192,29 +193,36 @@ class LssProtocolTests(LssTestCase):
             time.sleep(1.5)
 
     # Query Origin Offset
-    def test_QO(self):
+    def test_OriginOffset_O(self):
         for servo in get_servos('query'):
             self.assertQuery(servo, 'O')
+            bus.write_command(servo, 'O1000')
+            self.assertQueryEqual(servo, 'O', 1000)
+            bus.write_command(servo, 'CO0')
+            self.assertQueryEqual(servo, 'O', 0)
 
     # Query RC Angular Range
-    def test_AR(self):
+    def test_RCAngularRange_AR(self):
         for servo in get_servos('query'):
+            self.assertQuery(servo, 'AR')
             bus.write_command(servo, 'AR3600')
             self.assertQueryEqual(servo, 'AR', 3600)
             bus.write_command(servo, 'CAR1800')
             self.assertQueryEqual(servo, 'AR', 1800)
 
     # Query Stiffness
-    def test_AS(self):
+    def test_AngularStiffness_AS(self):
         for servo in get_servos('query'):
+            self.assertQuery(servo, 'AS')
             bus.write_command(servo, 'AS4')
             self.assertQueryEqual(servo, 'AS', 4)
             bus.write_command(servo, 'CAS0')
             self.assertQueryEqual(servo, 'AS', 0)
 
     # Query Holding Stiffness
-    def test_AH(self):
+    def test_HoldStiffness_AH(self):
         for servo in get_servos('query'):
+            self.assertQuery(servo, 'AH')
             bus.write_command(servo, 'AH0')
             self.assertQueryEqual(servo, 'AH', 0)
             bus.write_command(servo, 'CAH4')
@@ -226,24 +234,27 @@ class LssProtocolTests(LssTestCase):
             self.assertQuery(servo, 'HD')
 
     # Query Acceleration
-    def test_AA(self):
+    def test_Acceleration_AA(self):
         for servo in get_servos('query'):
+            self.assertQuery(servo, 'AA')
             bus.write_command(servo, 'AA0')
             self.assertQueryEqual(servo, 'AA', 0)
             bus.write_command(servo, 'CAA100')
             self.assertQueryEqual(servo, 'AA', 100)
 
     # Query Deceleration
-    def test_AD(self):
+    def test_Deceleration_AD(self):
         for servo in get_servos('query'):
+            self.assertQuery(servo, 'AD')
             bus.write_command(servo, 'AD0')
             self.assertQueryEqual(servo, 'AD', 0)
             bus.write_command(servo, 'CAD100')
             self.assertQueryEqual(servo, 'AD', 100)
 
     # Query Gyre Direction
-    def test_G(self):
+    def test_GyreDirection_G(self):
         for servo in get_servos('query'):
+            self.assertQuery(servo, 'G')
             bus.write_command(servo, 'G-1')
             self.assertQueryEqual(servo, 'G', -1)
             bus.write_command(servo, 'CG1')
@@ -275,17 +286,22 @@ class LssProtocolTests(LssTestCase):
             self.assertQuery(servo, 'CSL')
 
     # Query Position Filtering
-    def test_FPC(self):
+    def test_PositionFiltering_FPC(self):
         for servo in get_servos('query'):
+            self.assertQuery(servo, 'FPC')
             bus.write_command(servo, 'FPC10')
             self.assertQueryEqual(servo, 'FPC', 10)
             bus.write_command(servo, 'CFPC5')
             self.assertQueryEqual(servo, 'FPC', 5)
 
     # Query Maximum Motor Duty
-    def test_QMMD(self):
+    def test_MaximumMotorDuty_MMD(self):
         for servo in get_servos('query'):
             self.assertQuery(servo, 'MMD')
+            bus.write_command(servo, 'MMD500')
+            self.assertQueryEqual(servo, 'MMD', 500)
+            bus.write_command(servo, 'MMD1023')
+            self.assertQueryEqual(servo, 'MMD', 1023)
 
     # Query IPMS Enabled (PRIVATE)
     def test_QIPE(self):
@@ -293,14 +309,24 @@ class LssProtocolTests(LssTestCase):
             self.assertQuery(servo, 'IPE')
 
     # Query Maximum Speed in Degrees
-    def test_QSD(self):
+    def test_SpeedDeg_SD(self):
         for servo in get_servos('query'):
             self.assertQuery(servo, 'SD')
+            bus.write_command(servo, 'SD100')
+            self.assertQueryEqual(servo, 'SD', 100)
+            bus.write_command(servo, 'CSD200')
+            self.assertQueryEqual(servo, 'SD', 200)
+            bus.write_command(servo, 'CSD500')
 
     # Query Maximum Speed in RPM
-    def test_QSR(self):
+    def test_SpeedRPM_QSR(self):
         for servo in get_servos('query'):
             self.assertQuery(servo, 'SR')
+            bus.write_command(servo, 'SR10')
+            self.assertQueryEqual(servo, 'SR', 10)
+            bus.write_command(servo, 'CSR20')
+            self.assertQueryEqual(servo, 'SR', 20)
+            bus.write_command(servo, 'CSR100')
 
     # Query Voltage
     def test_QV(self):
