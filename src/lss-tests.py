@@ -116,13 +116,15 @@ class LssSelfTests(LssTestCase):
             self.assertQueryEqual(servo, 'LED', 2)
             bus.write_command(servo, 'CLED0')
 
-    # Configure & Verify Stiffnesses
-    def test_STIFF(self):
-        for servo in get_servos('query'):
-            bus.write_command(servo, 'AH')
+    # # Configure & Verify Stiffnesses
+    # def test_STIFF(self):
+    #     for servo in get_servos('query'):
+    #         bus.write_command(servo, 'AH')
 
 
-class LssQueryTests(LssTestCase):
+# @unittest.SkipTest
+
+class LssProtocolTests(LssTestCase):
 
     # Query Motor ID
     def test_QID(self):
@@ -180,9 +182,14 @@ class LssQueryTests(LssTestCase):
             self.assertQuery(servo, 'S')
 
     # Query Motion Control
-    def test_QEM(self):
+    def test_EM(self):
         for servo in get_servos('query'):
-            self.assertQuery(servo, 'EM')
+            bus.write_command(servo, 'EM0')
+            self.assertQueryEqual(servo, 'EM', 0)
+            bus.write_command(servo, 'CEM1')
+            self.assertQueryEqual(servo, 'EM', 1)
+            bus.write_command(servo, 'RESET')
+            time.sleep(1.5)
 
     # Query Origin Offset
     def test_QO(self):
@@ -190,19 +197,28 @@ class LssQueryTests(LssTestCase):
             self.assertQuery(servo, 'O')
 
     # Query RC Angular Range
-    def test_QAR(self):
+    def test_AR(self):
         for servo in get_servos('query'):
-            self.assertQuery(servo, 'AR')
+            bus.write_command(servo, 'AR3600')
+            self.assertQueryEqual(servo, 'AR', 3600)
+            bus.write_command(servo, 'CAR1800')
+            self.assertQueryEqual(servo, 'AR', 1800)
 
     # Query Stiffness
-    def test_QAS(self):
+    def test_AS(self):
         for servo in get_servos('query'):
-            self.assertQuery(servo, 'AS')
+            bus.write_command(servo, 'AS4')
+            self.assertQueryEqual(servo, 'AS', 4)
+            bus.write_command(servo, 'CAS0')
+            self.assertQueryEqual(servo, 'AS', 0)
 
     # Query Holding Stiffness
-    def test_QAH(self):
+    def test_AH(self):
         for servo in get_servos('query'):
-            self.assertQuery(servo, 'AH')
+            bus.write_command(servo, 'AH0')
+            self.assertQueryEqual(servo, 'AH', 0)
+            bus.write_command(servo, 'CAH4')
+            self.assertQueryEqual(servo, 'AH', 4)
 
     # Query Holding Delta
     def test_QHD(self):
@@ -210,19 +226,28 @@ class LssQueryTests(LssTestCase):
             self.assertQuery(servo, 'HD')
 
     # Query Acceleration
-    def test_QAA(self):
+    def test_AA(self):
         for servo in get_servos('query'):
-            self.assertQuery(servo, 'AA')
+            bus.write_command(servo, 'AA0')
+            self.assertQueryEqual(servo, 'AA', 0)
+            bus.write_command(servo, 'CAA100')
+            self.assertQueryEqual(servo, 'AA', 100)
 
     # Query Deceleration
-    def test_QAD(self):
+    def test_AD(self):
         for servo in get_servos('query'):
-            self.assertQuery(servo, 'AD')
+            bus.write_command(servo, 'AD0')
+            self.assertQueryEqual(servo, 'AD', 0)
+            bus.write_command(servo, 'CAD100')
+            self.assertQueryEqual(servo, 'AD', 100)
 
     # Query Gyre Direction
-    def test_QG(self):
+    def test_G(self):
         for servo in get_servos('query'):
-            self.assertQueryBetween(servo, 'G', -1, 1)
+            bus.write_command(servo, 'G-1')
+            self.assertQueryEqual(servo, 'G', -1)
+            bus.write_command(servo, 'CG1')
+            self.assertQueryEqual(servo, 'G', 1)
 
     # # Query First Position *** Return DIS
     # def test_QFD(self):
@@ -250,9 +275,12 @@ class LssQueryTests(LssTestCase):
             self.assertQuery(servo, 'CSL')
 
     # Query Position Filtering
-    def test_QFPC(self):
+    def test_FPC(self):
         for servo in get_servos('query'):
-            self.assertQuery(servo, 'FPC')
+            bus.write_command(servo, 'FPC10')
+            self.assertQueryEqual(servo, 'FPC', 10)
+            bus.write_command(servo, 'CFPC5')
+            self.assertQueryEqual(servo, 'FPC', 5)
 
     # Query Maximum Motor Duty
     def test_QMMD(self):
@@ -362,19 +390,21 @@ class LssQueryTests(LssTestCase):
 
 class LssActionTests(LssTestCase):
 
-    # Action Move in Degree
-    def test_D(self):
-        for servo in get_servos('action'):
-            bus.write_command(servo, 'D0')
-            time.sleep(0.8)
-            self.assertQueryWithin(servo, 'D', 0, 10)
-            bus.write_command(servo, 'D900')
-            time.sleep(0.8)
-            self.assertQueryWithin(servo, 'D', 900, 10)
-            bus.write_command(servo, 'D0')
-            time.sleep(0.8)
-            self.assertQueryWithin(servo, 'D', 0, 10)
-            time.sleep(1)
+    # Pass this class
+    pass
+
+    # # Action Move in Degree
+    # def test_D(self):
+    #     for servo in get_servos('action'):
+    #         bus.write_command(servo, 'D0')
+    #         time.sleep(0.8)
+    #         self.assertQueryWithin(servo, 'D', 0, 10)
+    #         bus.write_command(servo, 'D900')
+    #         time.sleep(0.8)
+    #         self.assertQueryWithin(servo, 'D', 900, 10)
+    #         bus.write_command(servo, 'D0')
+    #         time.sleep(0.8)
+    #         self.assertQueryWithin(servo, 'D', 0, 10)
 
     # # Action Wheel in Degree
     # # Error when the servo answer to QSD2 it does with *QSD without the "2" and we have a parsing error
