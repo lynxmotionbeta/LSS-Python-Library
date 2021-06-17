@@ -415,6 +415,7 @@ class LssProtocolTests(LssTestCase):
             self.assertQuery(servo, 'Y')
 
 
+@unittest.SkipTest
 class LssActionTests(LssTestCase):
     # Action Move in Degree
     def test_D(self):
