@@ -1,6 +1,7 @@
 from lss import LssPacket, LssBus
 import math
 import os
+import re
 import time
 import yaml
 import unittest
@@ -83,23 +84,23 @@ class LssTestCase(unittest.TestCase):
         self.assertEqual(p.value, value)
         self.assertEqual(p.command, parameter)
 
-    def assertQueryBetween(self, servo: int, parameter: str, min: int, max: int):
+    def assertQueryBetween(self, servo: int, parameter: str, min_value: int, max_value: int):
         bus.write_command(servo, f'Q{parameter}')
+        parameter = re.match('[a-zA-Z]*', parameter)[0]    # remove any number from the parameter
         p = bus.read()
         self.assertIsNotNone(p)
         self.assertTrue(p.known)
         self.assertEqual(p.command, parameter)
-        self.assertGreaterEqual(p.value, min)
-        self.assertLessEqual(p.value, max)
+        self.assertBetween(p.value, min_value, max_value)
 
-    def assertQueryWithin(self, servo: int, parameter: str, value: int, precision: int = 5):
+    def assertQueryNear(self, servo: int, parameter: str, value: int, precision: int = 5):
         bus.write_command(servo, f'Q{parameter}')
+        parameter = re.match('[a-zA-Z]*', parameter)[0]    # remove any number from the parameter
         p = bus.read()
         self.assertIsNotNone(p)
         self.assertTrue(p.known)
         self.assertEqual(p.command, parameter)
         self.assertBetween(p.value, value - precision, value + precision)
-
 
     def assertBetween(self, v: int, min_value: int, max_value: int):
         self.assertGreaterEqual(v, min_value)
@@ -415,48 +416,45 @@ class LssProtocolTests(LssTestCase):
 
 
 class LssActionTests(LssTestCase):
+    # Action Move in Degree
+    def test_D(self):
+        for servo in get_servos('action'):
+            bus.write_command(servo, 'D0')
+            time.sleep(0.8)
+            self.assertQueryNear(servo, 'D', 0, 10)
+            bus.write_command(servo, 'D900')
+            time.sleep(0.8)
+            self.assertQueryNear(servo, 'D', 900, 10)
+            bus.write_command(servo, 'D0')
+            time.sleep(0.8)
+            self.assertQueryNear(servo, 'D', 0, 10)
 
-    # Pass this class
-    pass
+    # Action Wheel in Degree
+    # Error when the servo answer to QSD2 it does with *QSD without the "2" and we have a parsing error
+    def test_WD(self):
+        for servo in get_servos('action'):
+            bus.write_command(servo, 'WD100')
+            time.sleep(0.5)
+            self.assertQueryNear(servo, 'SD2', 100, 5)
+            time.sleep(0.5)
+            bus.write_command(servo, 'D0')
+            time.sleep(0.5)
+            bus.write_command(servo, 'L')
+            time.sleep(1)
 
-    # # Action Move in Degree
-    # def test_D(self):
-    #     for servo in get_servos('action'):
-    #         bus.write_command(servo, 'D0')
-    #         time.sleep(0.8)
-    #         self.assertQueryWithin(servo, 'D', 0, 10)
-    #         bus.write_command(servo, 'D900')
-    #         time.sleep(0.8)
-    #         self.assertQueryWithin(servo, 'D', 900, 10)
-    #         bus.write_command(servo, 'D0')
-    #         time.sleep(0.8)
-    #         self.assertQueryWithin(servo, 'D', 0, 10)
+    # Action Wheel in RPM
+    # Error when the servo answer to QSR2 it does with *QSR without the "2" and we have a parsing error
+    def test_WR(self):
+        for servo in get_servos('action'):
+            bus.write_command(servo, 'WR10')
+            time.sleep(0.5)
+            self.assertQueryNear(servo, 'SR2', 10, 1)
+            time.sleep(0.5)
+            bus.write_command(servo, 'D0')
+            time.sleep(0.5)
+            bus.write_command(servo, 'L')
+            time.sleep(1)
 
-    # # Action Wheel in Degree
-    # # Error when the servo answer to QSD2 it does with *QSD without the "2" and we have a parsing error
-    # def test_WD(self):
-    #     for servo in get_servos('action'):
-    #         bus.write_command(servo, 'WD100')
-    #         time.sleep(0.5)
-    #         self.assertQueryWithin(servo, 'SD2', 100, 5)
-    #         time.sleep(0.5)
-    #         bus.write_command(servo, 'D0')
-    #         time.sleep(0.5)
-    #         bus.write_command(servo, 'L')
-    #         time.sleep(1)
-    #
-    # # Action Wheel in RPM
-    # # Error when the servo answer to QSR2 it does with *QSR without the "2" and we have a parsing error
-    # def test_WR(self):
-    #     for servo in get_servos('action'):
-    #         bus.write_command(servo, 'WR10')
-    #         time.sleep(0.5)
-    #         self.assertQueryWithin(servo, 'SR2', 10, 1)
-    #         time.sleep(0.5)
-    #         bus.write_command(servo, 'D0')
-    #         time.sleep(0.5)
-    #         bus.write_command(servo, 'L')
-    #         time.sleep(1)
 
 if __name__ == '__main__':
     unittest.main()
