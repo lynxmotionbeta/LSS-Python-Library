@@ -133,9 +133,16 @@ class LssProtocolTests(LssTestCase):
             self.assertQueryBetween(servo, 'ID', 0, 254)
 
     # Query Baud Rate
-    def test_QB(self):
+    def test_B_BaudRate(self):
         for servo in get_servos('query'):
             self.assertQueryBetween(servo, 'B', 9600, 921600)
+            bus.write_command(servo, 'CB115200')
+            self.assertQueryEqual(servo, 'B', 115200)
+            bus.write_command(servo, 'CB921600')
+            self.assertQueryEqual(servo, 'B', 921600)
+            bus.write_command(servo, 'RESET')
+            time.sleep(1.5)
+            # Might need to query the initial Baud and use that as the go back value.
 
     # Query Current Position
     def test_QD(self):
