@@ -400,82 +400,98 @@ class LssProtocolTests(LssTestCase):
             self.assertQuery(servo, 'Y')
 
 
+#@unittest.SkipTest
 class LssActionTests(LssTestCase):
-    @unittest.SkipTest
+
     # Action Move in Degree
     def test_MoveTo_D(self):
         for servo in get_servos('action'):
             bus.write_command(servo, 'D0')
-            time.sleep(0.8)
+            time.sleep(0.5)
             self.assertQueryNear(servo, 'D', 0, 10)
-            bus.write_command(servo, 'D900')
+            bus.write_command(servo, 'D450')
+            time.sleep(0.5)
+            self.assertQueryEqual(servo, 'DT', 450)
+            self.assertQueryNear(servo, 'D', 450, 10)
+            bus.write_command(servo, 'D-450')
             time.sleep(0.8)
-            self.assertQueryEqual(servo, 'DT', 900)
-            self.assertQueryNear(servo, 'D', 900, 10)
+            self.assertQueryEqual(servo, 'DT', -450)
+            self.assertQueryNear(servo, 'D', -450, 10)
             bus.write_command(servo, 'D0')
-            time.sleep(0.8)
+            time.sleep(0.5)
             self.assertQueryEqual(servo, 'DT', 0)
             self.assertQueryNear(servo, 'D', 0, 10)
 
-    @unittest.SkipTest
     # Action Move in Degree Relative
     def test_MoveBy_MD(self):
         for servo in get_servos('action'):
             bus.write_command(servo, 'D0')
-            time.sleep(0.8)
+            time.sleep(0.5)
             self.assertQueryNear(servo, 'D', 0, 10)
-            bus.write_command(servo, 'MD900')
-            time.sleep(0.8)
-            self.assertQueryNear(servo, 'D', 900, 10)
+            bus.write_command(servo, 'MD450')
+            time.sleep(0.5)
+            self.assertQueryNear(servo, 'D', 450, 10)
             bus.write_command(servo, 'MD-900')
             time.sleep(0.8)
+            self.assertQueryNear(servo, 'D', -450, 10)
+            bus.write_command(servo, 'MD450')
+            time.sleep(0.5)
             self.assertQueryNear(servo, 'D', 0, 10)
 
-    @unittest.SkipTest
     # Action Wheel in Degree
     def test_WheelSpeed_WD(self):
         for servo in get_servos('action'):
             bus.write_command(servo, 'WD100')
             time.sleep(0.5)
             self.assertQueryNear(servo, 'WD', 100, 5)
+            bus.write_command(servo, 'WD-100')
+            time.sleep(1)
+            self.assertQueryNear(servo, 'WD', -100, 5)
             bus.write_command(servo, 'D0')
             time.sleep(0.5)
             bus.write_command(servo, 'L')
 
-    @unittest.SkipTest
     # Action Wheel in RPM
     def test_WheelSpeedRPM_WR(self):
         for servo in get_servos('action'):
             bus.write_command(servo, 'WR20')
             time.sleep(0.5)
             self.assertQueryNear(servo, 'WR', 20, 1)
+            bus.write_command(servo, 'WR-20')
+            time.sleep(1)
+            self.assertQueryNear(servo, 'WR', -20, 1)
             bus.write_command(servo, 'D0')
             time.sleep(0.5)
             bus.write_command(servo, 'L')
 
-    @unittest.SkipTest
     # Action Position in PWM
     def test_RCMoveTo_P(self):
         for servo in get_servos('action'):
             bus.write_command(servo, 'P1500')
-            time.sleep(0.8)
+            time.sleep(0.5)
             self.assertQueryNear(servo, 'P', 1500, 100)
             bus.write_command(servo, 'P2000')
-            time.sleep(0.8)
+            time.sleep(0.5)
             self.assertQueryNear(servo, 'P', 2000, 100)
-            bus.write_command(servo, 'P1500')
+            bus.write_command(servo, 'P1000')
             time.sleep(0.8)
+            self.assertQueryNear(servo, 'P', 1000, 100)
+            bus.write_command(servo, 'P1500')
+            time.sleep(0.5)
             self.assertQueryNear(servo, 'P', 1500, 100)
 
-    @unittest.SkipTest
     # Action Raw Duty Cycle Move
     def test_FreeMove_RDM(self):
         for servo in get_servos('action'):
             bus.write_command(servo, 'RDM250')
-            time.sleep(0.8)
+            time.sleep(0.5)
             self.assertQueryEqual(servo, 'MD', 250)
+            bus.write_command(servo, 'RDM-250')
+            time.sleep(0.5)
+            self.assertQueryEqual(servo, 'MD', -250)
+            time.sleep(0.5)
             bus.write_command(servo, 'D0')
-            time.sleep(0.8)
+            time.sleep(0.5)
 
 if __name__ == '__main__':
     unittest.main()
