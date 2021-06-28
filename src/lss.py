@@ -39,7 +39,9 @@ LssCommandDescription = {
     'MMD': 'Maximum Motor Duty',
     'S': 'Query Speed',
     'SD': 'Maximum Speed in Degrees',
+    'SD2': 'Instant Speed in Degrees',
     'SR': 'Maximum Speed in RPM',
+    'SR2': 'Instant Speed in RPM',
     'V': 'Voltage',
     'T': 'Temperature',
     'C': 'Current (Amps)',
@@ -47,7 +49,21 @@ LssCommandDescription = {
     'LB': 'LED Blinking',
     'MS': 'Model String',
     'F': 'Firmware',
-    'N': 'Serial Number'
+    'N': 'Serial Number',
+    'HD': 'Holding Delta',
+    'LN': 'Negative Direction Limit',
+    'LP': 'Positive Direction Limit',
+    'LE': 'First Position Limits Enabled',
+    'CSL': 'Current Soft Limit Counter',
+    'IPE': 'IPMS Enabled',
+    'PO': 'Position Origin',
+    'IS': 'Initial Sequence',
+    'RIS': 'Initial Sequence RC',
+    'CR': 'Command Reply',
+    'TQ': 'Current Torque',
+    'TQT': 'Torque Target',
+    'TQM': 'Torque Maximum',
+    'Y': 'Control Mode'
 }
 
 LssCommandModifier = {

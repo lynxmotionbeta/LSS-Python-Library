@@ -1,0 +1,6 @@
+port:
+    name: /dev/cu.usbserial-AM4FNNPE
+    baud: 921600
+servos:
+    default: [0]
+
