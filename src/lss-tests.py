@@ -149,14 +149,18 @@ class LssProtocolTests(LssTestCase):
     # Baud Rate
     def test_BaudRate_B(self):
         for servo in get_servos('protocol'):
+            # we are only testing that a CB write and read-back
+            # are equal. Which is ok. If we were to test a baud
+            # rate change over a reset we'd need to update the
+            # baud rate of the 'bus' object's serial port.
             self.assertQueryBetween(servo, 'B', 9600, 921600)
             bus.write_command(servo, 'CB9600')
             self.assertQueryEqual(servo, 'B', 9600)
-            bus.write_command(servo, 'CB921600')
-            self.assertQueryEqual(servo, 'B', 921600)
-            bus.write_command(servo, 'RESET')
-            time.sleep(1.5)
-            # Might need to query the initial Baud and use that as the go back value.
+            # Revert back to baud rate given in configuration
+            bus.write_command(servo, f'CB{baud}')
+            self.assertQueryEqual(servo, 'B', baud)
+            #bus.write_command(servo, 'RESET')
+            #time.sleep(1.5)
 
     # Query Current Position
     def test_CurrentPosition_QD(self):
