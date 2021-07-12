@@ -449,11 +449,13 @@ class LssProtocolTests(LssTestCase):
             time.sleep(1.5)
 
     # (PRIVATE) Query Initial Sequence
+    @unittest.SkipTest
     def test_InitialSequence_QIS(self):
         for servo in get_servos('protocol'):
             self.assertQuery(servo, 'IS')
 
     # (PRIVATE) Query Initial Sequence RC
+    @unittest.SkipTest
     def test_RCInitialSequence_QRIS(self):
         for servo in get_servos('protocol'):
             self.assertQuery(servo, 'RIS')
