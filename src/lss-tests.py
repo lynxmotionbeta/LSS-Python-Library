@@ -494,43 +494,43 @@ class LssProtocolTests(LssTestCase):
             self.assertQueryEqual(servo, 'Y', 0)
 
 
-@unittest.SkipTest
+#@unittest.SkipTest
 class LssActionTests(LssTestCase):
 
     # Action Move in Degree
     def test_MoveTo_D(self):
         for servo in get_servos('action'):
             bus.write_command(servo, 'D0')
-            time.sleep(0.5)
-            self.assertQueryNear(servo, 'D', 0, 10)
-            bus.write_command(servo, 'D450')
-            time.sleep(0.5)
-            self.assertQueryEqual(servo, 'DT', 450)
-            self.assertQueryNear(servo, 'D', 450, 10)
-            bus.write_command(servo, 'D-450')
             time.sleep(0.8)
+            self.assertQueryNear(servo, 'D', 0, 15)
+            bus.write_command(servo, 'D450')
+            time.sleep(0.8)
+            self.assertQueryEqual(servo, 'DT', 450)
+            self.assertQueryNear(servo, 'D', 450, 15)
+            bus.write_command(servo, 'D-450')
+            time.sleep(1.2)
             self.assertQueryEqual(servo, 'DT', -450)
-            self.assertQueryNear(servo, 'D', -450, 10)
+            self.assertQueryNear(servo, 'D', -450, 15)
             bus.write_command(servo, 'D0')
-            time.sleep(0.5)
+            time.sleep(0.8)
             self.assertQueryEqual(servo, 'DT', 0)
-            self.assertQueryNear(servo, 'D', 0, 10)
+            self.assertQueryNear(servo, 'D', 0, 15)
 
     # Action Move in Degree Relative
     def test_MoveBy_MD(self):
         for servo in get_servos('action'):
             bus.write_command(servo, 'D0')
-            time.sleep(0.5)
-            self.assertQueryNear(servo, 'D', 0, 10)
+            time.sleep(0.8)
+            self.assertQueryNear(servo, 'D', 0, 15)
             bus.write_command(servo, 'MD450')
-            time.sleep(0.5)
-            self.assertQueryNear(servo, 'D', 450, 10)
+            time.sleep(0.8)
+            self.assertQueryNear(servo, 'D', 450, 15)
             bus.write_command(servo, 'MD-900')
             time.sleep(0.8)
-            self.assertQueryNear(servo, 'D', -450, 10)
+            self.assertQueryNear(servo, 'D', -450, 15)
             bus.write_command(servo, 'MD450')
-            time.sleep(0.5)
-            self.assertQueryNear(servo, 'D', 0, 10)
+            time.sleep(0.8)
+            self.assertQueryNear(servo, 'D', 0, 15)
 
     # Action Wheel in Degree
     def test_WheelSpeed_WD(self):
@@ -585,7 +585,7 @@ class LssActionTests(LssTestCase):
             self.assertQueryEqual(servo, 'MD', -250)
             time.sleep(0.5)
             bus.write_command(servo, 'D0')
-            time.sleep(0.5)
+            time.sleep(0.8)
 
 if __name__ == '__main__':
     unittest.main()
