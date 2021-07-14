@@ -571,10 +571,10 @@ class LssActionTests(LssTestCase):
         for servo in get_servos('action'):
             bus.write_command(servo, 'WR20')
             time.sleep(0.5)
-            self.assertQueryNear(servo, 'WR', 20, 1)
+            self.assertQueryNear(servo, 'WR', 20, 2)
             bus.write_command(servo, 'WR-20')
             time.sleep(1)
-            self.assertQueryNear(servo, 'WR', -20, 1)
+            self.assertQueryNear(servo, 'WR', -20, 2)
             bus.write_command(servo, 'D0')
             time.sleep(0.5)
             bus.write_command(servo, 'L')
