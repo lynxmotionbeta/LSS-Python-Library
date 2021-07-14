@@ -5,6 +5,7 @@ import re
 import time
 import yaml
 import unittest
+import datetime
 
 port_name = 'COM4'
 baud = 921600
@@ -106,8 +107,21 @@ class LssTestCase(unittest.TestCase):
         self.assertGreaterEqual(v, min_value)
         self.assertLessEqual(v, max_value)
 
+    def assertReachesValue(self, servo:int, parameter: str, value: int, precision: int = 5, timeout: int = 15000):
+        timeout_at = datetime.datetime.now() + datetime.timedelta(milliseconds=timeout)
+        bus.write_command(servo, f'Q{parameter}')
+        p = bus.read()
+        while not p or p.value < value - precision or p.value > value + precision:
+            time.sleep(0.2)
+            bus.write_command(servo, f'Q{parameter}')
+            p = bus.read()
+            if datetime.datetime.now() > timeout_at:
+                # wait time expired
+                self.assertBetween(p.value, value - precision, value + precision)
 
-#@unittest.SkipTest
+
+
+@unittest.SkipTest
 class LssProtocolTests(LssTestCase):
 
     # LED
@@ -496,6 +510,13 @@ class LssProtocolTests(LssTestCase):
 
 #@unittest.SkipTest
 class LssActionTests(LssTestCase):
+    def setUp(self):
+        # move all servos to 0
+        for servo in get_servos('action'):
+            bus.write_command(servo, 'D0')
+        # now wait for servos to reach destination
+        for servo in get_servos('action'):
+            self.assertReachesValue(servo, 'D', 0, 15)
 
     # Action Move in Degree
     def test_MoveTo_D(self):
@@ -585,7 +606,7 @@ class LssActionTests(LssTestCase):
             self.assertQueryEqual(servo, 'MD', -250)
             time.sleep(0.5)
             bus.write_command(servo, 'D0')
-            time.sleep(0.8)
+            self.assertReachesValue(servo, 'D', 0, 15)
 
 if __name__ == '__main__':
     unittest.main()
