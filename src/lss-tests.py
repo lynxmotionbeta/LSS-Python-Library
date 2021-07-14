@@ -76,6 +76,7 @@ class LssTestCase(unittest.TestCase):
         self.assertIsNotNone(p)
         self.assertTrue(p.known)
         self.assertEqual(p.command, parameter)
+        return p
 
     def assertQueryEqual(self, servo: int, parameter: str, value: int):
         bus.write_command(servo, f'Q{parameter}')
@@ -121,8 +122,23 @@ class LssTestCase(unittest.TestCase):
 
 
 
-@unittest.SkipTest
+#@unittest.SkipTest
 class LssProtocolTests(LssTestCase):
+    def test_FirmwareVersion_QF3(self):
+        # first test setup
+        for servo in get_servos('protocol'):
+            bus.write_command(servo, 'QF3')
+            fw_version = bus.read()
+            print(f'Servo {servo} Firmware {fw_version.value}')
+            fw = [int(v) for v in fw_version.value.split('.')]
+            self.assertGreater(fw[0], 360)
+            self.assertEqual(len(fw), 3)
+
+    def test_FirmwareVersion_QF(self):
+        # first test setup
+        for servo in get_servos('protocol'):
+            fw_version = self.assertQuery(servo, 'F')
+            self.assertGreater(fw_version.value, 360)
 
     # LED
     def test_LED_LED(self):
@@ -413,11 +429,6 @@ class LssProtocolTests(LssTestCase):
         for servo in get_servos('protocol'):
             self.assertQuery(servo, 'MS')
 
-    # Query Firmware Version
-    def test_FirmwareVersion_QF(self):
-        for servo in get_servos('protocol'):
-            self.assertQuery(servo, 'F')
-
     # Query Serial Number
     def test_SerialNumber_QN(self):
         for servo in get_servos('protocol'):
@@ -512,9 +523,9 @@ class LssProtocolTests(LssTestCase):
 class LssActionTests(LssTestCase):
     def setUp(self):
         # move all servos to 0
+        # and wait for servos to reach destination
         for servo in get_servos('action'):
             bus.write_command(servo, 'D0')
-        # now wait for servos to reach destination
         for servo in get_servos('action'):
             self.assertReachesValue(servo, 'D', 0, 15)
 

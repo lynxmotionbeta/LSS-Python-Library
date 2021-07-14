@@ -123,7 +123,7 @@ class LssPacket(object):
                         self.value = self.command[2:] + extra
                         self.command = 'MS'
                     elif self.command.startswith('F'):
-                        self.value = self.command[1:] + extra
+                        self.value = m[5] + m[6]
                         self.command = 'F'
                     elif self.command.startswith('N'):
                         self.value = self.command[1:] + extra
