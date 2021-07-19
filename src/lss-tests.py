@@ -124,6 +124,18 @@ class LssTestCase(unittest.TestCase):
 
 #@unittest.SkipTest
 class LssProtocolTests(LssTestCase):
+    zerod = False
+
+    def setUp(self):
+        # move all servos to 0
+        # and wait for servos to reach destination
+        if not LssProtocolTests.zerod:
+            LssProtocolTests.zerod = True
+            for servo in get_servos('action'):
+                bus.write_command(servo, 'D0')
+            for servo in get_servos('action'):
+                self.assertReachesValue(servo, 'D', 0, 15)
+
     def test_FirmwareVersion_QF3(self):
         # first test setup
         for servo in get_servos('protocol'):
