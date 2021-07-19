@@ -197,7 +197,7 @@ class LssBus(object):
         self.ser.write(data)
 
     def write_command(self, id, command: str):
-        data = f'#{id}{command}\r'.encode('utf8') + self.eol
+        data = f'#{id}{command}'.encode('utf8') + self.eol
         self.ser.write(data)
 
     def read_raw(self):
