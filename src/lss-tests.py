@@ -195,7 +195,7 @@ class LssProtocolTests(LssTestCase):
             # are equal. Which is ok. If we were to test a baud
             # rate change over a reset we'd need to update the
             # baud rate of the 'bus' object's serial port.
-            self.assertQueryBetween(servo, 'B', 9600, 921600)
+            self.assertQueryBetween(servo, 'B', 9600, 3000000)
             bus.write_command(servo, 'CB9600')
             self.assertQueryEqual(servo, 'B', 9600)
             # Revert back to baud rate given in configuration
