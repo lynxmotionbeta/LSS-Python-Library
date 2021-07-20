@@ -631,7 +631,18 @@ class LssActionTests(LssTestCase):
             bus.write_command(servo, 'D0')
             self.assertReachesValue(servo, 'D', 0, 15)
 
+def clearServos(group: str):
+    # move all servos to 0
+    # and wait for servos to reach destination
+    for servo in get_servos(group):
+        bus.write_command(servo, 'O0')
+    #    bus.write_command(servo, 'D0')
+    #for servo in get_servos(group):
+    #    self.assertReachesValue(servo, 'D', 0, 15)
+
+
 if __name__ == '__main__':
+    clearServos('action')
     unittest.main()
     bus.close()
 
